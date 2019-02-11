@@ -110,6 +110,7 @@ export enum AST_NODE_TYPES {
   TSConstructSignatureDeclaration = 'TSConstructSignatureDeclaration',
   TSDeclareKeyword = 'TSDeclareKeyword',
   TSDeclareFunction = 'TSDeclareFunction',
+  TSEmptyBodyFunctionExpression = 'TSEmptyBodyFunctionExpression',
   TSEnumDeclaration = 'TSEnumDeclaration',
   TSEnumMember = 'TSEnumMember',
   TSExportAssignment = 'TSExportAssignment',
@@ -167,4 +168,19 @@ export enum AST_NODE_TYPES {
   TSUndefinedKeyword = 'TSUndefinedKeyword',
   TSUnknownKeyword = 'TSUnknownKeyword',
   TSVoidKeyword = 'TSVoidKeyword'
+}
+
+export enum AST_TOKEN_TYPES {
+  Boolean = 'Boolean',
+  Identifier = 'Identifier',
+  JSXIdentifier = 'JSXIdentifier',
+  JSXMemberExpression = 'JSXMemberExpression',
+  JSXText = 'JSXText',
+  Keyword = 'Keyword',
+  Null = 'Null',
+  Numeric = 'Numeric',
+  Punctuator = 'Punctuator',
+  RegularExpression = 'RegularExpression',
+  String = 'String',
+  Template = 'Template'
 }

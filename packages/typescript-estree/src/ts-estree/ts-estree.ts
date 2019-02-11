@@ -1,4 +1,4 @@
-import { AST_NODE_TYPES } from './ast-node-types';
+import { AST_NODE_TYPES, AST_TOKEN_TYPES } from './ast-node-types';
 
 export interface LineAndColumnData {
   /**
@@ -52,22 +52,8 @@ export interface BaseNode {
  * are not ever included as part of the standard AST tree.
  */
 
-export type TokenType =
-  | 'Boolean'
-  | 'Identifier'
-  | 'JSXIdentifier'
-  | 'JSXMemberExpression'
-  | 'JSXText'
-  | 'Keyword'
-  | 'Null'
-  | 'Numeric'
-  | 'Punctuator'
-  | 'RegularExpression'
-  | 'String'
-  | 'Template';
-
 export interface Token extends BaseNode {
-  type: TokenType;
+  type: AST_TOKEN_TYPES;
   value: string;
   regex?: {
     pattern: string;
@@ -182,6 +168,7 @@ export type Node =
   | TSConstructSignatureDeclaration
   | TSDeclareFunction
   | TSDeclareKeyword
+  | TSEmptyBodyFunctionExpression
   | TSEnumDeclaration
   | TSEnumMember
   | TSExportAssignment
@@ -261,6 +248,7 @@ export type ClassElement =
   | MethodDefinition
   | TSAbstractClassProperty
   | TSAbstractMethodDefinition
+  | TSEmptyBodyFunctionExpression
   | TSIndexSignature;
 export type DeclarationStatement =
   | ClassDeclaration
@@ -512,7 +500,7 @@ interface LiteralBase extends BaseNode {
 
 interface MethodDefinitionBase extends BaseNode {
   key: PropertyName;
-  value: FunctionExpression;
+  value: FunctionExpression | TSEmptyBodyFunctionExpression;
   computed: boolean;
   static: boolean;
   kind: 'method' | 'get' | 'set' | 'constructor';
@@ -1052,6 +1040,11 @@ export interface TSDeclareFunction extends FunctionDeclarationBase {
 
 export interface TSDeclareKeyword extends BaseNode {
   type: AST_NODE_TYPES.TSDeclareKeyword;
+}
+
+export interface TSEmptyBodyFunctionExpression extends FunctionDeclarationBase {
+  type: AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
+  body: null;
 }
 
 export interface TSEnumDeclaration extends BaseNode {
