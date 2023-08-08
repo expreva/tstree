@@ -1,6 +1,6 @@
 {
   "name": "@expreva/tstree",
-  "version": "5.1.6",
+  "version": "6.3.0",
   "description": "A parser that converts TypeScript source code into an ESTree compatible form",
   "files": [
     "build",
@@ -50,8 +50,8 @@
     "release": "npm publish --access public"
   },
   "dependencies": {
-    "@typescript-eslint/types": "6.1.0",
-    "@typescript-eslint/visitor-keys": "6.1.0",
+    "@typescript-eslint/types": "6.3.0",
+    "@typescript-eslint/visitor-keys": "6.3.0",
     "debug": "^4.3.4",
     "semver": "^7.5.4",
     "ts-api-utils": "^1.0.1"
@@ -59,10 +59,10 @@
   "devDependencies": {
     "@babel/code-frame": "*",
     "@babel/parser": "*",
-    "@swc/jest": "^0.2.27",
+    "@swc/jest": "^0.2.28",
     "@types/debug": "^4.1.8",
     "concurrently": "^8.2.0",
-    "esbuild": "^0.18.16",
+    "esbuild": "^0.18.19",
     "esbuild-node-externals": "^1.8.0",
     "esbuild-plugin-d.ts": "^1.1.0",
     "esbuild-plugin-glob": "^2.2.2",
