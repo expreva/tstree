@@ -1,6 +1,6 @@
 # TSTree
 
-> A parser that produces an ESTree-compatible AST for TypeScript code.
+> Parse TypeScript code into ESTree-compatible abstract syntax tree.
 
 Fork of [`@typescript-eslint/typescript-estree`](https://typescript-eslint.io/packages/typescript-estree) to run on the web.
 

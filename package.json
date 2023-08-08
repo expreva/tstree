@@ -1,7 +1,7 @@
 {
   "name": "@expreva/tstree",
-  "version": "6.3.0",
-  "description": "A parser that converts TypeScript source code into an ESTree compatible form",
+  "version": "6.3.1",
+  "description": "Parse TypeScript code into ESTree-compatible abstract syntax tree",
   "files": [
     "build",
     "README.md",
