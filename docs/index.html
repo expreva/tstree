@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSTree</title>
+</head>
+<body>
+
+<textarea id="source" cols="30" rows="10">const message: string = 'hi'
+console.log(message)
+</textarea>
+
+<pre><code id="parsed"></code></pre>
+
+<script src="./tstree.js"></script>
+<script>
+;(function() {
+
+  const $source = document.getElementById('source')
+  const $parsed = document.getElementById('parsed')
+
+function recompile() {
+
+  const code = $source.value
+
+  try {    
+
+    const parsed = tstree.parse(code)
+
+    // console.log('tstree', parsed)
+
+    $parsed.innerText = JSON.stringify(parsed, null, 2)
+
+  } catch(e) {
+    $parsed.innerText = e.message
+    return
+  }
+}
+
+recompile()
+
+$source.addEventListener('keyup', recompile)
+
+})()
+</script>
+</body>
+</html>

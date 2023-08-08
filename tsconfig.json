@@ -7,7 +7,7 @@
   "include": ["src", "typings", "tests", "tools"],
   "exclude": ["tests/fixtures/**/*"],
   "references": [
-    { "path": "../types/tsconfig.build.json" },
-    { "path": "../visitor-keys/tsconfig.build.json" }
+    { "path": "./tsconfig-types.build.json" },
+    { "path": "./tsconfig-visitor-keys.build.json" }
   ]
 }
