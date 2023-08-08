@@ -58,30 +58,19 @@ console.log(message)
 ## Changes
 
 - Forked from `typescript-eslint` at version `6.1.0`
-- Split off the `typescript-estree` package
+- Split off the `typescript-estree` package using `git-filter-repo` ([Splitting a subfolder out into a new repository](https://docs.github.com/en/get-started/using-git/splitting-a-subfolder-out-into-a-new-repository))
 
   ```sh
   git clone https://github.com/typescript-eslint/typescript-eslint tstree
   cd tstree
-  git filter-branch --prune-empty --subdirectory-filter packages/typescript-estree  main
-  git remote set-url origin https://github.com/expreva/tstree.git
-  git push -u origin main
+  git filter-repo --path packages/typescript-estree
   ```
 
-- Remove use of `fs`, `is-glob`, `globby`
-- Shim use of `path`
+- Make it run in browser: Remove use of `fs`, `is-glob`, `globby`; Shim use of `path`
 
 - Copy shared TypeScript config files
 
-  ```
-  cp ../typescript-eslint/tsconfig.base.json
-  cp ../typescript-eslint/packages/types/tsconfig.build.json tsconfig-types.build.json
-  cp ../typescript-eslint/packages/visitor-keys/tsconfig.build.json tsconfig-visitor-keys.build.json
-  ```
-
-- Make it build
-- Make it run
-
-- Migrate to `esbuild` to bundle for web, CommonJS, and ES Module
+- Make it build: Migrate to `esbuild` to bundle for web, CommonJS, and ES Module
 
 - Publish NPM module `@expreva/tstree`
+
