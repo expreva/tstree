@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function -- for TypeScript APIs*/
-import type * as ts from 'typescript/lib/tsserverlibrary';
+// import type * as ts from 'typescript/lib/tsserverlibrary';
+// import * as tsserver from 'typescript/lib/tsserverlibrary';
 
 const doNothing = (): void => {};
 
@@ -11,7 +12,7 @@ export type TypeScriptProjectService = ts.server.ProjectService;
 
 export function createProjectService(): TypeScriptProjectService {
   // We import this lazily to avoid its cost for users who don't use the service
-  const tsserver = require('typescript/lib/tsserverlibrary') as typeof ts;
+  // const tsserver = require('typescript/lib/tsserverlibrary') as typeof ts;
 
   // TODO: see getWatchProgramsForProjects
   // We don't watch the disk, we just refer to these when ESLint calls us
