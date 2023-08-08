@@ -1,5 +1,6 @@
 /build
 /package-lock.json
+/try
 
 # Logs
 logs

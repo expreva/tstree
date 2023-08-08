@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "build:web": "rm -rf build/web/* && esbuild src/index.ts --bundle --minify --sourcemap --format=iife --global-name=tstree --outfile=docs/tstree.js && cp docs/tstree.* build/web",
-    "build:cjs": "rm -rf build/cjs/* && esbuild src/index.ts --bundle --minify --sourcemap --format=cjs --outfile=build/cjs/index.js && echo '{\"type\": \"commonjs\"}' > build/cjs/package.json",
+    "build:cjs": "rm -rf build/cjs/* && node build cjs && echo '{\"type\": \"commonjs\"}' > build/cjs/package.json",
     "build:esm": "rm -rf build/esm/* && esbuild src/index.ts --bundle --minify --sourcemap --format=esm --outfile=build/esm/index.js && echo '{\"type\": \"module\"}' > build/esm/package.json",
     "build": "npm run build:web && npm run build:cjs && npm run build:esm",
     "dev": "concurrently --raw 'esbuild src/index.ts --bundle --sourcemap --format=iife --global-name=tstree --outfile=docs/tstree.js --watch' 'http-server docs -c-1'",

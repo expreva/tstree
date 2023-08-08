@@ -6,39 +6,48 @@ const tsPaths = require('esbuild-ts-paths');
 const { globPlugin } = require('esbuild-plugin-glob');
 const { dtsPlugin } = require("esbuild-plugin-d.ts");
 
-Promise.all([
-  esbuild.build({
-    entryPoints: ['./src/**/*.ts', './src/**/*.tsx'],
-    outdir: 'dist',
-    bundle: false,
-    minify: true,
+const plugins = [
+  // dtsPlugin(),
+  globPlugin(),
+  // tsPaths('./tsconfig.build.json'),
+  nodeExternalsPlugin()
+]
+
+const configCommon = {
+  entryPoints: ['./src/**/*.ts', './src/**/*.tsx'],
+  bundle: false,
+  minify: true,
+  platform: 'node',
+  sourcemap: true,
+  sourcesContent: false,
+  jsx: 'automatic',
+  plugins,
+}
+
+const args = process.argv.slice(2)
+const configs = []
+
+if (!args.length || args.includes('cjs')) {
+  console.log('Building for CommonJS')
+  configs.push({
+    ...configCommon,
     format: 'cjs',
-    platform: 'node',
-    sourcemap: true,
-    sourcesContent: false,
-    jsx: 'automatic',
+    outdir: 'build/cjs',
     target: 'node12',
-    plugins: [
-        // dtsPlugin(),
-        globPlugin(),
-        // tsPaths('./tsconfig.build.json'),
-        nodeExternalsPlugin()
-    ],
-  }),
-  // esbuild.build({
-  //   entryPoints: ['./src/**/*.ts', './src/**/*.tsx'],
-  //   outdir: 'dist/es',
-  //   bundle: false,
-  //   minify: true,
-  //   format: 'esm',
-  //   platform: 'node',
-  //   jsx: 'automatic',
-  //   sourcemap: true,
-  //   sourcesContent: false,
-  //   target: 'node14',
-  //   plugins: [dtsPlugin(), globPlugin(), tsPaths('./tsconfig.json'), nodeExternalsPlugin()],
-  // }),
-]).catch((error) => {
+  })
+}
+
+if (!args.length || args.includes('esm')) {
+  console.log('Building for ES Module')
+  configs.push({
+    ...configCommon,
+    format: 'esm',
+    outdir: 'build/esm',
+    target: 'node14',
+  })
+}
+
+Promise.all(configs.map(esbuild.build)).catch((error) => {
   console.error(error);
   process.exit(1);
 });
