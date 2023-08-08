@@ -32,7 +32,7 @@ export function createParseSettings(
   const tsconfigRootDir =
     typeof options.tsconfigRootDir === 'string'
       ? options.tsconfigRootDir
-      : process.cwd();
+      : '/' // process.cwd();
   const parseSettings: MutableParseSettings = {
     allowInvalidAST: options.allowInvalidAST === true,
     code,
@@ -52,8 +52,8 @@ export function createParseSettings(
     errorOnUnknownASTType: options.errorOnUnknownASTType === true,
     EXPERIMENTAL_projectService:
       (options.EXPERIMENTAL_useProjectService === true &&
-        process.env.TYPESCRIPT_ESLINT_EXPERIMENTAL_TSSERVER !== 'false') ||
-      (process.env.TYPESCRIPT_ESLINT_EXPERIMENTAL_TSSERVER === 'true' &&
+        /*process.env.TYPESCRIPT_ESLINT_EXPERIMENTAL_TSSERVER !== 'false'*/false) ||
+      (/*process.env.TYPESCRIPT_ESLINT_EXPERIMENTAL_TSSERVER === 'true'*/false &&
         options.EXPERIMENTAL_useProjectService !== false)
         ? (TSSERVER_PROJECT_SERVICE ??= createProjectService())
         : undefined,

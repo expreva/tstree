@@ -1,4 +1,4 @@
-import path from 'path';
+import path from '../path';
 import * as ts from 'typescript';
 
 function getScriptKind(filePath: string, jsx: boolean): ts.ScriptKind {

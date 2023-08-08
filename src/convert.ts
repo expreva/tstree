@@ -328,8 +328,9 @@ export class Converter {
               const raw = child.expression.raw;
               child.directive = raw.slice(1, -1);
               return child; // child can be null, but it's filtered below
+            } else {
+              allowDirectives = false;
             }
-            allowDirectives = false;
           }
           return child; // child can be null, but it's filtered below
         })
@@ -1032,11 +1033,12 @@ export class Converter {
             optional: false,
             typeAnnotation: undefined,
           });
+        } else {
+          return this.createNode<TSESTree.ArrayExpression>(node, {
+            type: AST_NODE_TYPES.ArrayExpression,
+            elements: node.elements.map(el => this.convertChild(el)),
+          });
         }
-        return this.createNode<TSESTree.ArrayExpression>(node, {
-          type: AST_NODE_TYPES.ArrayExpression,
-          elements: node.elements.map(el => this.convertChild(el)),
-        });
       }
 
       case SyntaxKind.ObjectLiteralExpression: {
@@ -1073,21 +1075,21 @@ export class Converter {
 
       case SyntaxKind.PropertyAssignment: {
         // eslint-disable-next-line deprecation/deprecation
-        const { questionToken, exclamationToken } = node;
+        // const { questionToken, exclamationToken } = node;
 
-        if (questionToken) {
-          this.#throwError(
-            questionToken,
-            'A property assignment cannot have a question token.',
-          );
-        }
+        // if (questionToken) {
+        //   this.#throwError(
+        //     questionToken,
+        //     'A property assignment cannot have a question token.',
+        //   );
+        // }
 
-        if (exclamationToken) {
-          this.#throwError(
-            exclamationToken,
-            'A property assignment cannot have an exclamation token.',
-          );
-        }
+        // if (exclamationToken) {
+        //   this.#throwError(
+        //     exclamationToken,
+        //     'A property assignment cannot have an exclamation token.',
+        //   );
+        // }
 
         return this.createNode<TSESTree.Property>(node, {
           type: AST_NODE_TYPES.Property,
@@ -1103,28 +1105,28 @@ export class Converter {
 
       case SyntaxKind.ShorthandPropertyAssignment: {
         // eslint-disable-next-line deprecation/deprecation
-        const { modifiers, questionToken, exclamationToken } = node;
+        // const { modifiers, questionToken, exclamationToken } = node;
 
-        if (modifiers) {
-          this.#throwError(
-            modifiers[0],
-            'A shorthand property assignment cannot have modifiers.',
-          );
-        }
+        // if (modifiers) {
+        //   this.#throwError(
+        //     modifiers[0],
+        //     'A shorthand property assignment cannot have modifiers.',
+        //   );
+        // }
 
-        if (questionToken) {
-          this.#throwError(
-            questionToken,
-            'A shorthand property assignment cannot have a question token.',
-          );
-        }
+        // if (questionToken) {
+        //   this.#throwError(
+        //     questionToken,
+        //     'A shorthand property assignment cannot have a question token.',
+        //   );
+        // }
 
-        if (exclamationToken) {
-          this.#throwError(
-            exclamationToken,
-            'A shorthand property assignment cannot have an exclamation token.',
-          );
-        }
+        // if (exclamationToken) {
+        //   this.#throwError(
+        //     exclamationToken,
+        //     'A shorthand property assignment cannot have an exclamation token.',
+        //   );
+        // }
 
         if (node.objectAssignmentInitializer) {
           return this.createNode<TSESTree.Property>(node, {
@@ -1144,17 +1146,18 @@ export class Converter {
             shorthand: true,
             kind: 'init',
           });
+        } else {
+          return this.createNode<TSESTree.Property>(node, {
+            type: AST_NODE_TYPES.Property,
+            computed: false,
+            key: this.convertChild(node.name),
+            kind: 'init',
+            method: false,
+            optional: false,
+            shorthand: true,
+            value: this.convertChild(node.name),
+          });
         }
-        return this.createNode<TSESTree.Property>(node, {
-          type: AST_NODE_TYPES.Property,
-          computed: false,
-          key: this.convertChild(node.name),
-          kind: 'init',
-          method: false,
-          optional: false,
-          shorthand: true,
-          value: this.convertChild(node.name),
-        });
       }
 
       case SyntaxKind.ComputedPropertyName:
@@ -1452,47 +1455,49 @@ export class Converter {
               typeAnnotation: undefined,
               value: undefined,
             });
+          } else {
+            return arrayItem;
           }
-          return arrayItem;
-        }
-        let result: TSESTree.Property | TSESTree.RestElement;
-        if (node.dotDotDotToken) {
-          result = this.createNode<TSESTree.RestElement>(node, {
-            type: AST_NODE_TYPES.RestElement,
-            argument: this.convertChild(node.propertyName ?? node.name),
-            decorators: [],
-            optional: false,
-            typeAnnotation: undefined,
-            value: undefined,
-          });
         } else {
-          result = this.createNode<TSESTree.Property>(node, {
-            type: AST_NODE_TYPES.Property,
-            key: this.convertChild(node.propertyName ?? node.name),
-            value: this.convertChild(node.name),
-            computed: Boolean(
-              node.propertyName &&
-                node.propertyName.kind === SyntaxKind.ComputedPropertyName,
-            ),
-            method: false,
-            optional: false,
-            shorthand: !node.propertyName,
-            kind: 'init',
-          });
-        }
+          let result: TSESTree.Property | TSESTree.RestElement;
+          if (node.dotDotDotToken) {
+            result = this.createNode<TSESTree.RestElement>(node, {
+              type: AST_NODE_TYPES.RestElement,
+              argument: this.convertChild(node.propertyName ?? node.name),
+              decorators: [],
+              optional: false,
+              typeAnnotation: undefined,
+              value: undefined,
+            });
+          } else {
+            result = this.createNode<TSESTree.Property>(node, {
+              type: AST_NODE_TYPES.Property,
+              key: this.convertChild(node.propertyName ?? node.name),
+              value: this.convertChild(node.name),
+              computed: Boolean(
+                node.propertyName &&
+                  node.propertyName.kind === SyntaxKind.ComputedPropertyName,
+              ),
+              method: false,
+              optional: false,
+              shorthand: !node.propertyName,
+              kind: 'init',
+            });
+          }
 
-        if (node.initializer) {
-          result.value = this.createNode<TSESTree.AssignmentPattern>(node, {
-            type: AST_NODE_TYPES.AssignmentPattern,
-            decorators: [],
-            left: this.convertChild(node.name),
-            optional: false,
-            range: [node.name.getStart(this.ast), node.initializer.end],
-            right: this.convertChild(node.initializer),
-            typeAnnotation: undefined,
-          });
+          if (node.initializer) {
+            result.value = this.createNode<TSESTree.AssignmentPattern>(node, {
+              type: AST_NODE_TYPES.AssignmentPattern,
+              decorators: [],
+              left: this.convertChild(node.name),
+              optional: false,
+              range: [node.name.getStart(this.ast), node.initializer.end],
+              right: this.convertChild(node.initializer),
+              typeAnnotation: undefined,
+            });
+          }
+          return result;
         }
-        return result;
       }
 
       case SyntaxKind.ArrowFunction: {
@@ -1615,11 +1620,12 @@ export class Converter {
             typeAnnotation: undefined,
             value: undefined,
           });
+        } else {
+          return this.createNode<TSESTree.SpreadElement>(node, {
+            type: AST_NODE_TYPES.SpreadElement,
+            argument: this.convertChild(node.expression),
+          });
         }
-        return this.createNode<TSESTree.SpreadElement>(node, {
-          type: AST_NODE_TYPES.SpreadElement,
-          argument: this.convertChild(node.expression),
-        });
       }
 
       case SyntaxKind.Parameter: {
@@ -1892,23 +1898,24 @@ export class Converter {
             declaration: null,
             assertions: this.convertAssertClasue(node.assertClause),
           });
+        } else {
+          this.assertModuleSpecifier(node, false);
+          return this.createNode<TSESTree.ExportAllDeclaration>(node, {
+            type: AST_NODE_TYPES.ExportAllDeclaration,
+            source: this.convertChild(node.moduleSpecifier),
+            exportKind: node.isTypeOnly ? 'type' : 'value',
+            exported:
+              // note - for compat with 3.7.x, where node.exportClause is always undefined and
+              //        SyntaxKind.NamespaceExport does not exist yet (i.e. is undefined), this
+              //        cannot be shortened to an optional chain, or else you end up with
+              //        undefined === undefined, and the true path will hard error at runtime
+              node.exportClause &&
+              node.exportClause.kind === SyntaxKind.NamespaceExport
+                ? this.convertChild(node.exportClause.name)
+                : null,
+            assertions: this.convertAssertClasue(node.assertClause),
+          });
         }
-        this.assertModuleSpecifier(node, false);
-        return this.createNode<TSESTree.ExportAllDeclaration>(node, {
-          type: AST_NODE_TYPES.ExportAllDeclaration,
-          source: this.convertChild(node.moduleSpecifier),
-          exportKind: node.isTypeOnly ? 'type' : 'value',
-          exported:
-            // note - for compat with 3.7.x, where node.exportClause is always undefined and
-            //        SyntaxKind.NamespaceExport does not exist yet (i.e. is undefined), this
-            //        cannot be shortened to an optional chain, or else you end up with
-            //        undefined === undefined, and the true path will hard error at runtime
-            node.exportClause &&
-            node.exportClause.kind === SyntaxKind.NamespaceExport
-              ? this.convertChild(node.exportClause.name)
-              : null,
-          assertions: this.convertAssertClasue(node.assertClause),
-        });
       }
 
       case SyntaxKind.ExportSpecifier:
@@ -1925,12 +1932,13 @@ export class Converter {
             type: AST_NODE_TYPES.TSExportAssignment,
             expression: this.convertChild(node.expression),
           });
+        } else {
+          return this.createNode<TSESTree.ExportDefaultDeclaration>(node, {
+            type: AST_NODE_TYPES.ExportDefaultDeclaration,
+            declaration: this.convertChild(node.expression),
+            exportKind: 'value',
+          });
         }
-        return this.createNode<TSESTree.ExportDefaultDeclaration>(node, {
-          type: AST_NODE_TYPES.ExportDefaultDeclaration,
-          declaration: this.convertChild(node.expression),
-          exportKind: 'value',
-        });
 
       // Unary Operations
 
@@ -1947,13 +1955,14 @@ export class Converter {
             prefix: node.kind === SyntaxKind.PrefixUnaryExpression,
             argument: this.convertChild(node.operand),
           });
+        } else {
+          return this.createNode<TSESTree.UnaryExpression>(node, {
+            type: AST_NODE_TYPES.UnaryExpression,
+            operator,
+            prefix: node.kind === SyntaxKind.PrefixUnaryExpression,
+            argument: this.convertChild(node.operand),
+          });
         }
-        return this.createNode<TSESTree.UnaryExpression>(node, {
-          type: AST_NODE_TYPES.UnaryExpression,
-          operator,
-          prefix: node.kind === SyntaxKind.PrefixUnaryExpression,
-          argument: this.convertChild(node.operand),
-        });
       }
 
       case SyntaxKind.DeleteExpression:
@@ -2011,34 +2020,35 @@ export class Converter {
             this.convertChild(node.right) as TSESTree.Expression,
           );
           return result;
-        }
-        const expressionType = getBinaryExpressionType(node.operatorToken);
-        if (
-          this.allowPattern &&
-          expressionType.type === AST_NODE_TYPES.AssignmentExpression
-        ) {
-          return this.createNode<TSESTree.AssignmentPattern>(node, {
-            type: AST_NODE_TYPES.AssignmentPattern,
-            decorators: [],
-            left: this.convertPattern(node.left, node),
-            optional: false,
+        } else {
+          const expressionType = getBinaryExpressionType(node.operatorToken);
+          if (
+            this.allowPattern &&
+            expressionType.type === AST_NODE_TYPES.AssignmentExpression
+          ) {
+            return this.createNode<TSESTree.AssignmentPattern>(node, {
+              type: AST_NODE_TYPES.AssignmentPattern,
+              decorators: [],
+              left: this.convertPattern(node.left, node),
+              optional: false,
+              right: this.convertChild(node.right),
+              typeAnnotation: undefined,
+            });
+          }
+          return this.createNode<
+            | TSESTree.AssignmentExpression
+            | TSESTree.BinaryExpression
+            | TSESTree.LogicalExpression
+          >(node, {
+            ...expressionType,
+            left: this.converter(
+              node.left,
+              node,
+              expressionType.type === AST_NODE_TYPES.AssignmentExpression,
+            ),
             right: this.convertChild(node.right),
-            typeAnnotation: undefined,
           });
         }
-        return this.createNode<
-          | TSESTree.AssignmentExpression
-          | TSESTree.BinaryExpression
-          | TSESTree.LogicalExpression
-        >(node, {
-          ...expressionType,
-          left: this.converter(
-            node.left,
-            node,
-            expressionType.type === AST_NODE_TYPES.AssignmentExpression,
-          ),
-          right: this.convertChild(node.right),
-        });
       }
 
       case SyntaxKind.PropertyAccessExpression: {
@@ -2375,11 +2385,12 @@ export class Converter {
             type: AST_NODE_TYPES.JSXSpreadChild,
             expression,
           });
+        } else {
+          return this.createNode<TSESTree.JSXExpressionContainer>(node, {
+            type: AST_NODE_TYPES.JSXExpressionContainer,
+            expression,
+          });
         }
-        return this.createNode<TSESTree.JSXExpressionContainer>(node, {
-          type: AST_NODE_TYPES.JSXExpressionContainer,
-          expression,
-        });
       }
 
       case SyntaxKind.JsxAttribute: {
@@ -2581,13 +2592,13 @@ export class Converter {
 
       case SyntaxKind.PropertySignature: {
         // eslint-disable-next-line deprecation/deprecation
-        const { initializer } = node;
-        if (initializer) {
-          this.#throwError(
-            initializer,
-            'A property signature cannot have an initializer.',
-          );
-        }
+        // const { initializer } = node;
+        // if (initializer) {
+        //   this.#throwError(
+        //     initializer,
+        //     'A property signature cannot have an initializer.',
+        //   );
+        // }
 
         return this.createNode<TSESTree.TSPropertySignature>(node, {
           type: AST_NODE_TYPES.TSPropertySignature,
@@ -2630,13 +2641,13 @@ export class Converter {
 
       case SyntaxKind.FunctionType: {
         // eslint-disable-next-line deprecation/deprecation
-        const { modifiers } = node;
-        if (modifiers) {
-          this.#throwError(
-            modifiers[0],
-            'A function type cannot have modifiers.',
-          );
-        }
+        // const { modifiers } = node;
+        // if (modifiers) {
+        //   this.#throwError(
+        //     modifiers[0],
+        //     'A function type cannot have modifiers.',
+        //   );
+        // }
       }
       // intentional fallthrough
       case SyntaxKind.ConstructSignature:
@@ -2981,12 +2992,12 @@ export class Converter {
               type: AST_NODE_TYPES.TSNullKeyword,
             },
           );
+        } else {
+          return this.createNode<TSESTree.TSLiteralType>(node, {
+            type: AST_NODE_TYPES.TSLiteralType,
+            literal: this.convertChild(node.literal),
+          });
         }
-
-        return this.createNode<TSESTree.TSLiteralType>(node, {
-          type: AST_NODE_TYPES.TSLiteralType,
-          literal: this.convertChild(node.literal),
-        });
       }
       case SyntaxKind.TypeAssertionExpression: {
         return this.createNode<TSESTree.TSTypeAssertion>(node, {

@@ -1,4 +1,4 @@
-import { normalize } from 'path';
+// import { normalize } from 'path';
 
 import type { TSESTreeOptions } from '../parser-options';
 
@@ -37,9 +37,10 @@ export function inferSingleRun(options: TSESTreeOptions | undefined): boolean {
   if (options?.allowAutomaticSingleRunInference) {
     if (
       // Default to single runs for CI processes. CI=true is set by most CI providers by default.
-      process.env.CI === 'true' ||
+      // process.env.CI === 'true' ||
       // This will be true for invocations such as `npx eslint ...` and `./node_modules/.bin/eslint ...`
-      process.argv[1].endsWith(normalize('node_modules/.bin/eslint'))
+      // process.argv[1].endsWith(path.normalize('node_modules/.bin/eslint'))
+      false
     ) {
       return true;
     }

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from '../path';
 import type { Program } from 'typescript';
 import * as ts from 'typescript';
 
@@ -71,7 +71,7 @@ function getCanonicalFileName(filePath: string): CanonicalPath {
 function ensureAbsolutePath(p: string, tsconfigRootDir: string): string {
   return path.isAbsolute(p)
     ? p
-    : path.join(tsconfigRootDir || process.cwd(), p);
+    : path.join(tsconfigRootDir || '/'/*process.cwd()*/, p);
 }
 
 function canonicalDirname(p: CanonicalPath): CanonicalPath {

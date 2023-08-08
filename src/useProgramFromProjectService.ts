@@ -1,4 +1,4 @@
-import path from 'path';
+import path from './path';
 import type * as ts from 'typescript';
 import type { server } from 'typescript/lib/tsserverlibrary';
 

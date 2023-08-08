@@ -1,6 +1,6 @@
 import debug from 'debug';
-import { sync as globSync } from 'globby';
-import isGlob from 'is-glob';
+// import { sync as globSync } from 'globby';
+// import isGlob from 'is-glob';
 
 import type { CanonicalPath } from '../create-program/shared';
 import {
@@ -20,6 +20,12 @@ const log = debug(
 
 let RESOLUTION_CACHE: ExpiringCache<string, readonly CanonicalPath[]> | null =
   null;
+
+
+// Shim glob for browser
+const isGlob = (f: any) => false
+const globSync = (arr: any, options?: any) => []
+
 
 export function clearGlobCache(): void {
   RESOLUTION_CACHE?.clear();

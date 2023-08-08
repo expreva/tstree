@@ -1,6 +1,6 @@
 import debug from 'debug';
-import * as fs from 'fs';
-import * as path from 'path';
+// import * as fs from 'fs';
+import path from '../path';
 import * as ts from 'typescript';
 
 import type { ASTAndDefiniteProgram } from './shared';
@@ -30,7 +30,7 @@ function useProvidedPrograms(
 
   if (!astAndProgram) {
     const relativeFilePath = path.relative(
-      tsconfigRootDir || process.cwd(),
+      tsconfigRootDir || '/', // process.cwd(),
       filePath,
     );
     const errorLines = [
@@ -71,7 +71,7 @@ function createProgramFromConfigFile(
       },
       fileExists: fs.existsSync,
       getCurrentDirectory: () =>
-        (projectDirectory && path.resolve(projectDirectory)) || process.cwd(),
+        (projectDirectory && path.resolve(projectDirectory)) || '//', // process.cwd(),
       readDirectory: ts.sys.readDirectory,
       readFile: file => fs.readFileSync(file, 'utf-8'),
       useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
@@ -88,7 +88,7 @@ function createProgramFromConfigFile(
 function formatDiagnostics(diagnostics: ts.Diagnostic[]): string | undefined {
   return ts.formatDiagnostics(diagnostics, {
     getCanonicalFileName: f => f,
-    getCurrentDirectory: process.cwd,
+    getCurrentDirectory: () => '/', // process.cwd,
     getNewLine: () => '\n',
   });
 }
